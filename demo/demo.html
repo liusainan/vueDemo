@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>templeteJS</title>
+    <script src="https://unpkg.com/vue@2.3.4/dist/vue.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+    <style type="text/css">
+    .Box {
+        width: 800px;
+        margin: 0 auto;
+    }
+    h5 span {
+        color: #0db6d7;
+        font-size: 18px;
+        padding-right: 10px;
+        vertical-align: middle;
+    }
+    .Box p a {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        color: #fff;
+        background: #00b5d9;
+        margin-right: 15px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    textarea {
+        width: 100%;
+        height: 300px;
+    }
+    
+    textarea.outputBox {
+        color: #00b5d9;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="snanTemplete" class="Box">
+        <h5 v-once><span>{{ userName }}</span>{{ titleMsg }}</h5>
+        <div class="text">
+            <textarea placeholder="输入html" type="text" class="inputBox" v-model="strHtml"></textarea>
+        </div>
+        <h5></h5>
+        <p>
+            <a v-for="item in unitItems" v-on:click.prevent="changeUnit(item)">{{ item}}</a>
+        </p>
+        <div class="text">
+            <textarea placeholder="输出tpl" type="text" class="outputBox">{{ strTpl }}</textarea>
+        </div>
+        <script type="text/javascript">
+            var templete = new Vue({
+                el: '#snanTemplete',
+                data: {
+                    userName: 'Snan!',
+                    titleMsg: '再也不用苦逼地一个一个加了^.^',
+                    strHtml: '',
+                    unit: ',',
+                    unitItems: ['+', ',', '\\', 'J'],
+                    JSON: {
+                        "result": 0,
+                        "data": {
+                            "list": [{
+                                "isSignUp": false, //批量去除代注释的json
+                                "campusUrl": "",
+                                "campusStatus": "1",
+                                "isExtension": false //批量去除代注释的json
+                            }, ],
+                            "page": 1,
+                            "totalCount": 14,
+                            "pageSize": 20,
+                            "totalPages": 1
+                        }
+                    }
+                },
+                computed: {
+                    strTpl: function(){
+                        if(this.unit == 'J'){
+                            return this.getMockJson(this.JSON);
+                        }else{
+                            return this.strHtml.length>0 ? "'" + this.strHtml.replace(/\n/g, "'"+this.unit+"\n'") + "'" : '';
+                        }
+                    }
+                },
+                methods: {
+                    changeUnit: function(unit, event){
+                        this.unit = unit;
+                    },
+                    getMockJson: function(strJSON){
+                        return Mock.mock(strJSON);
+                    }
+                }
+            });
+        </script>
+    </div>
+</body>
+
+</html>
